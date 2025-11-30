@@ -5,7 +5,7 @@
 		<meta lang="fr" />
 		<style>
 			:root {
-				--color: hsl(261.64deg 100% 52.16% / 85%);
+				--text: hsl(261.64deg 100% 52.16% / 85%);
 			}
 			/* latin */
 			@font-face {
@@ -32,17 +32,24 @@
 				display: flex;
 				flex-wrap: wrap;
 				justify-content: space-evenly;
-				gap: 2rem;
+				column-gap: 2rem;
+				row-gap: 1.5rem;
 			}
 
 			a {
-				color: var(--color);
+				color: var(--text);
+				text-decoration: none;
+				border-bottom: 2px dotted var(--text);
+
+				&:hover {
+					border-bottom-style: solid;
+				}
 			}
 
 			h1 {
 				text-align: center;
 				font-weight: 500;
-				color: var(--color);
+				color: var(--text);
 			}
 			@media (min-width: 999px) {
 				body {
@@ -96,7 +103,7 @@
 				>
 			</li>
 			<li>
-				<a href="mailto:tisseusesderegards@mailo.com"
+				<a id="mail" href="mailto:tisseusesderegards@mailo.com"
 					>La boite aux lettres</a
 				>
 			</li>
@@ -106,5 +113,33 @@
 				>
 			</li>
 		</ul>
+		<script>
+			let clipboardAvailable = true
+			const mail = document.getElementById('mail')
+
+			mail.addEventListener('click', async function (e) {
+				if (!clipboardAvailable) return
+
+				e.preventDefault()
+				e.stopPropagation()
+				const email = e.target.href.replace('mailto:', '')
+				try {
+					await navigator.clipboard.writeText(email)
+					showEmailCopied()
+				} catch (err) {
+					clipboardAvailable = false
+					console.error('Erreur de copie : ', err)
+					e.target.click()
+				}
+			})
+
+			async function showEmailCopied() {
+				const original = mail.textContent
+				mail.textContent = 'Voir presse-papier !'
+				setTimeout(() => {
+					mail.textContent = original
+				}, 3000)
+			}
+		</script>
 	</body>
 </html>
